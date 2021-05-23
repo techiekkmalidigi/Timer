@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
 
-function App() {
+const Timer = (props) => {
+  const { initialMinute = 0, initialSeconds = 0 } = props;
+  const [minutes, setMinutes] = useState(initialMinute);
+  const [seconds, setSeconds] = useState(initialSeconds);
+  useEffect(() => {
+    const myInterval = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+      }
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(myInterval);
+        } else {
+          setMinutes(minutes - 1);
+          setSeconds(59);
+        }
+      }
+    }, 1000);
+    return () => {
+      clearInterval(myInterval);
+    };
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {minutes === 0 && seconds === 0 ? null : (
+        <h1>
+          {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+        </h1>
+      )}
     </div>
   );
-}
+};
 
-export default App;
+export default function App() {
+  return (
+    <>
+      <Timer initialMinute={5} initialSeconds={0} />
+    </>
+  );
+}
